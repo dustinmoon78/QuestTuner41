@@ -1,0 +1,225 @@
+// ============================================================================
+// 综合任务优化 — 主配置 / Main configuration
+// ----------------------------------------------------------------------------
+// 改完保存，然后重启服务端（SPT.Server.exe）生效。
+// Save, then restart the server for changes to take effect.
+//
+// ★ 出厂默认就能直接用：只开了「击杀 Scav 改成任意目标」一项，其余全关。
+//   The defaults work out of the box: only "replaceScavsWithAny" is on.
+// ★ 本文件可以写 // 注释，解析器会跳过；也可以留尾逗号。
+//   The parser skips // comments and allows trailing commas.
+// ============================================================================
+{
+
+  // ────────────────────────────────────────────────────────────────
+  // ① 去掉任务里的各种限制 / Remove quest restrictions
+  //    全是 false（不动原版），改成 true 才生效。
+  //    All default to false. Set to true to activate.
+  // ────────────────────────────────────────────────────────────────
+  "removeTarget": false,
+  "removeWeapon": false,            // 去掉「必须用指定武器」
+  "removeWeaponMods": false,        // 去掉「必须装指定配件」
+  "removeDistance": false,          // 去掉「必须在 X 米距离内」
+  "removeTime": false,              // 去掉「限时任务」
+  "removeMap": false,               // 去掉「只能在某张地图做」
+  "removeZone": false,              // 只在任务原本那张地图里去掉区域限定（地图限制保留；地图定位不到的任务原样不动）
+  "removeBodyPart": false,          // 去掉「打指定部位」
+  "removeSelfGear": false,          // 去掉「自身装备限制」
+  "removeEnemyGear": false,         // 去掉「目标装备限制」
+  "removeSelfHealthEffect": false,  // 去掉「自身健康/伤势限制」
+  "removeEnemyHealthEffect": false, // 去掉「目标健康/伤势限制」
+  "removeFindInRaid": false,        // 去掉「撤离前必须做完某事」
+
+  // ────────────────────────────────────────────────────────────────
+  // ② 击杀目标泛化 / Generalise kill targets
+  // ────────────────────────────────────────────────────────────────
+  "replaceScavsWithAny": true,      // 「击杀 Scav」改成「击杀任意目标」
+  "replacePmcWithAny": false,       // PMC 条件同样处理
+
+  // ★角色族放宽口径（2026-10-20）：任务的角色白名单**整族**命中这里的前缀时，
+  //   该任务才会被放宽成「击杀任意目标」（并清空白名单）。
+  //   pmcBot = 掠夺者 / 夜行者；sectant = 邪教徒（sectantPriest / sectantWarrior / sectantOni 等）。
+  //   含 boss* / follower* 等 BOSS 族角色的任务**保持严格**，不会被放宽。
+  //   置空 = 只有纯 Scav 任务（无角色白名单）会被放宽。
+  "relaxRolePrefixes": ["pmcBot", "sectant"],
+  "harderPmc": false,               // 开了上面那项才有效：按倍率提高难度
+  "harderPmcMultiplier": 2,         // 倍率数值
+
+  // ★「配对中和」是自动的，不用管。
+  //   有些任务完成条件是「杀 PMC」而失败条件是「杀 Scav 即失败」，只放宽完成侧的话，
+  //   杀一只丧尸会同时踩完成与失败两边，任务直接失败。
+  //   完成侧一旦被放宽，本任务里与之矛盾的「杀某类 AI 即失败」会一并移除；
+  //   带角色白名单的失败条件（击杀 Boss Sanitar 失败之类）一律保留。
+  //   Pairing is automatic: relaxing a completion condition also removes the
+  //   contradicting "kill X to fail" condition. Role-specific failure
+  //   conditions (kill Boss Sanitar, etc.) are always kept.
+
+  // ────────────────────────────────────────────────────────────────
+  // ③ 数量 / Counts   -1 = 不改原版
+  // ────────────────────────────────────────────────────────────────
+  "eliminationCount": -1,           // 击杀数改成固定值
+  "eliminationPercent": -1,         // 击杀数改成百分比
+  "handoverItemCount": -1,          // 上交数改成固定值
+  "handoverItemPercent": -1,        // 上交数改成百分比
+
+  // ────────────────────────────────────────────────────────────────
+  // ④ 筛选 / Filtering
+  // ────────────────────────────────────────────────────────────────
+  "exemptQuests": [],               // 这些任务不处理（填任务 ID）
+  "onlyQuests": [],                 // 只处理这些任务；留空 = 全部
+  "questOverrides": {},             // 逐任务覆盖，例：{"任务ID": {"removeTime": true}}
+  "affectRepeatables": false,       // 日常 / 周常也一起改
+  "honorSgtlaggyConfig": true,      // 读 sgtlaggyQuestTweaks 的排除清单并一并跳过
+
+  // ────────────────────────────────────────────────────────────────
+  // ⑤ 特殊处理 / Convenience features   默认全关，不用动
+  // ────────────────────────────────────────────────────────────────
+  "QualityOfLife": {
+    "revealAllQuestObjectives": false,   // 显示原本隐藏的任务目标
+    "revealUnknownRewards": false,       // 去掉奖励条目的「未知」标记
+    "removeTimeGates": false             // 移除任务等待期
+  },
+
+  "SpecialCases": {
+    "lightkeeperOnlyRequireLevel": 0,    // 灯塔任务只要等级（0 = 关）
+    "tarkovShooterM10": false,           // 把 Sako TRG M10 加进 Tarkov Shooter 1–6
+    "collectorPrerequisiteBackport": false  // 按 EFT 1.1.0.0 补回收藏家前置
+  },
+
+  "Fixups": {
+    "widenScavRoles": true,          // 放宽「消灭任意 Scav」的角色白名单
+    "addRoles": [                    // 要追加的角色（枚举名原文，大小写敏感）
+      "infectedAssault",
+      "infectedCivil",
+      "infectedPmc",
+      "infectedLaborant",
+      "infectedTagilla",
+      "cursedAssault",
+      "crazyAssaultEvent",
+      "arenaFighterEvent",
+      "assaultGroup"
+    ],
+    "includePmcBot": false,          // 掠夺者 / 夜行者也算 Scav
+    "includeNonIdiomRoleSets": false,// 凡含 assault 的组合都当族写法处理
+    "widenLocationTargets": true,    // 大范围补地图白名单
+    "addLocationTargets": ["Labyrinth"],   // 要补的地图 ID
+    "locationWidenMinMaps": 5,       // 地图清单少于这个数视为刻意限定，不放宽
+    "pruneUnknownWeaponIds": true,   // 剔除指向不存在物品的武器 ID
+    "fixInvalidKillTargets": true,   // 修正非法击杀目标
+    "killTargetAliases": { "Scav": "Savage" }   // 别名表
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  // ⑥ 调试 / Debugging
+  // ────────────────────────────────────────────────────────────────
+  "dryRun": false,                  // 只预演不写入，日志报改动数
+  "debug": false,                   // 逐项明细开关（明细走 Debug 级，不进日志文件）
+  "markerSuffix": "",               // 【已降级 2026-10-11】旧的任务目标行尾标记（原值 " (S4A)"）。默认关，
+                                    //   改用下面的 questNameSuffix；想恢复旧行为填回非空值即可。
+                                    //   ★老用户无需手改：从 1.1.1 及更早升上来、这里还是旧暗号的，起服时会自动关闭并在日志说明。
+  "questNameSuffix": "（任务已优化）", // 【任务优化】被改过【条件】的任务，在【任务名】尾部追加的标记；空字符串 = 关闭。
+                                    //   判定口径＝该任务任一条件改写命中（击杀目标/限时/限图/区域/数量/角色白名单…），
+                                    //   武器池往条件里加的枪不算这一族，走下面的 weaponNameSuffix。
+                                    //   落点＝任务名 locale 键，任务列表里直接可见。
+                                    //   ★老用户无需手改：从 1.2.0 升上来、这里还是单族的「（已优化）」的，
+                                    //     起服时会自动升为「（任务已优化）」并在日志说明。
+                                    //     ★只有这一种历史出厂值会被自动改；你自己写过的任何值都原样保留。
+  "weaponNameSuffix": "（武器已优化）",// 【武器优化】武器池**真的往该任务条件里加过枪**的任务，任务名尾部追加的标记；空 = 关闭。
+                                    //   ★与 questNameSuffix 是两个独立维度，同一任务可同时命中，两枚标记叠加。
+                                    //   口径＝池确实 Add 过（不是「任务有模组枪可用」，后者会误标一大批）。
+  "dumpQuestTablePath": "",         // 导出任务表快照（排障用）
+  "dumpRepeatablesPath": "",        // 导出日常模板快照（排障用）
+
+  // ────────────────────────────────────────────────────────────────
+  // ⑦ 击杀任务可用武器 / Weapon pool for kill-with-X quests
+  //    从原独立的 weaponPool.json 并过来的。
+  //    Moved in from the former standalone weaponPool.json.
+  //
+  //    ★ 通常不需要改：启动时会自动扫描你已装的其它 mod，把它们的武器加进相关任务。
+  //      You normally need not touch this: other mods are scanned at startup.
+  //    ★ 只有遇到「某个任务明明该有武器却没列出来」才手工在这里加一条映射。
+  //      Only add a mapping when a quest is missing its weapon list.
+  //    ★ 格式：任务要求武器 ID → 允许替代的武器 ID 列表
+  //      Format: required weapon ID → list of allowed substitute weapon IDs
+  //      例 / e.g.  "5ac66cb05acfc40198510a10": ["6a93c42217239f2cfc483aa8"]
+  // ────────────────────────────────────────────────────────────────
+  "weaponPool": {
+    "consoleLogEnabled": false,          // 逐项明细打到服务端控制台（只进 Debug 日志、不落盘）
+    "outputTaskWeapons": true,           // 【当前版本已不生效，仅为兼容旧配置保留】
+    "outputAllWeapons": false,            // 【当前版本已不生效，仅为兼容旧配置保留】
+    "autoScanMods": true,                // 自动扫描 user\mods 提取克隆映射
+    "autoScanPlatformMatch": true,       // 刀 / 雷 的自动映射也走平台匹配
+    "sameModelFallback": true,           // 同型号兜底：任务点名的是「变体」（模组自建枪）时，按物品内部名（_name）
+                                         //   把同型号的枪归为一组、组内双向放行。关掉则这类任务只认那一把枪。
+                                         //   Bypasses the clone-only mapping: groups weapons sharing the same
+                                         //   template _name (e.g. weapon_colt_m4a1_556x45) and cross-allows them.
+    "maxWeaponNames": 0,                 // 描述块里武器名上限（0 = 不截断）
+    "lang": "ch",                        // locale 语言键
+    "sendWeaponListOnQuestAccept": true, // 接取任务后额外发一条武器清单消息
+    "acceptMessageMaxWeapons": 0,        // 【当前版本已不生效，仅为兼容旧配置保留】
+    "excludeWeapons": [],                // 按物品 ID 排除
+    "excludeMods": [],                   // 按来源模组目录名排除整包物品
+    "weapons": {}                        // 手工映射，见上面的说明；出厂留空，全靠自动扫描
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  // ⑧ 任务链提示 / Quest chain hints
+  //    整块自成一块：只往任务描述里加文字，不改任务数据。
+  //    删掉整块或设 "Enabled": false 都不影响其它功能。
+  //    Text only, never touches quest data. Safe to delete or disable.
+  // ────────────────────────────────────────────────────────────────
+  "ChainHint": {
+    "Enabled": true,
+    "InsertPosition": "prefix",         // prefix = 描述开头；suffix = 描述结尾
+
+    "ShowPrerequisite": true,           // 显示「前置任务」
+    "ShowUnlock": true,                 // 显示「后续任务」
+    "ShowLevelRequirement": true,       // 显示「等级需求」
+    "ShowTraderName": true,            // 后续任务名后带商人名
+
+    "ShowMainQuestTag": false,          // 任务名前加「主线任务」
+    "ShowLightkeeperTag": false,        // 任务名前加「灯塔之匙」
+    //   上面两项默认关闭：4.1 的 MGMod 已在做 3x4 指引，同时开会叠出两个标记。
+    //   Both default to off: MGMod already tags 3x4 quests. Turn them on
+    //   after uninstalling MGMod.
+
+    "MaxUnlockShown": 0,                // 后续任务最多显示几条（0 = 不限）
+    "MaxPrerequisiteShown": 0,          // 前置任务最多显示几条（0 = 不限）
+    "ChainDepth": 0,                    // 链条展开层数（0 = 只看直接上下游；Kappa 这类长链建议 1~2）
+    "ShowUnlockLevel": false,           // 后续任务名后附带各自等级需求
+
+    "Text": {                           // 文案自定义 / Custom text
+      "Prerequisite": "前置任务: 完成",
+      "Unlock": "后续任务: ",
+      "Level": "等级需求: PMC等级达到{0}级，",   // {0} = 等级
+      "Separator": "、",
+      "Ending": "。",
+      "UnlockLevelSuffix": "[等级{0}]"
+    },
+
+    "Color": {                          // 十六进制 RGB，无 # / Hex RGB, no #
+      "PreQuest": "FF6666",            // 前置任务（红）
+      "UnlockQuest": "80E0FF",         // 后续任务（浅蓝）
+      "QuestLevel": "66FF66",          // 等级需求（绿）
+      "MainQuest": "FFA500",           // 主线标记（橙）
+      "LightKeeperQuest": "228B22"     // 灯塔标记（深绿）
+    },
+
+    "Tag": {                            // 标签文字 / Tag text
+      "MainQuest": "「主线任务」",
+      "LightKeeper": "「灯塔之匙」"
+    },
+
+    "QuestBlackList": [                 // 不处理的任务 ID（默认屏蔽收藏家：前置链会刷屏）
+      "5c51aac186f77432ea65c552"
+    ],
+    "SkipTraderIds": [],                // 不处理的任务商人 ID
+    "NameStripTexts": [                 // 拼链条文本前从任务名里剔除的标记
+      "【Road of 3X4】"                 //   默认剔除 MGMod 的 3x4 标记
+    ],
+
+    "LogLevel": "summary"              // quiet 只报异常 / summary 启动摘要 / full 逐轮诊断
+    //   "ConsoleLog": true             // 旧开关，仅在没有 LogLevel 时才生效，别两个都写
+  }
+
+}

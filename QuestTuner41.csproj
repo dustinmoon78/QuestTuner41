@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!--
+      4.1 环境根目录：本文件唯一的环境绑定项，优先级
+        命令行 -p:EFTRoot=…  >  环境变量 EFT41_ROOT  >  本机默认（下面第二行）。
+      换机器或改测纯净环境时不需要改本文件：
+        dotnet build -c Release -p:EFTRoot="G:\EFT4.1CS"
+      2026-10-29：原先散在各条 HintPath 里的绝对路径统一收敛到此一处，
+      引用到的程序集本身与版本一个都没换（只换路径写法）。
+    -->
+    <EFTRoot Condition="'$(EFTRoot)' == '' and '$(EFT41_ROOT)' != ''">$(EFT41_ROOT)</EFTRoot>
+    <EFTRoot Condition="'$(EFTRoot)' == ''">G:\EFT4.1</EFTRoot>
+    <Version>1.4.0</Version>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>QuestTuner41</AssemblyName>
+    <RootNamespace>QuestTuner41</RootNamespace>
+    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SPTarkov.Server.Core">
+      <HintPath>$(EFTRoot)\SPT_Runtime\SPTarkov.Server.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="SPTarkov.DI">
+      <HintPath>$(EFTRoot)\SPT_Runtime\SPTarkov.DI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="SPTarkov.Common">
+      <HintPath>$(EFTRoot)\SPT_Runtime\SPTarkov.Common.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="SemanticVersioning">
+      <HintPath>$(EFTRoot)\SPT_Runtime\SemanticVersioning.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(EFTRoot)\SPT_Runtime\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Spectre.Console">
+      <HintPath>$(EFTRoot)\SPT_Runtime\Spectre.Console.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Spectre.Console.Ansi">
+      <HintPath>$(EFTRoot)\SPT_Runtime\Spectre.Console.Ansi.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="weaponPool.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

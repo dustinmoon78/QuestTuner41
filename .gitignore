@@ -1,0 +1,26 @@
+# 构建产物
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.userprefs
+.DS_Store
+
+# 依赖与临时
+node_modules/
+__pycache__/
+*.pyc
+.idea/
+
+# Agent 运行态（不应入库）
+.mimosa/
+sess_*.json
+task-review-*.json
+batch-*.json
+run-*.json
+*.continue.json
+upstream/
+
+# 日志
+*.log
